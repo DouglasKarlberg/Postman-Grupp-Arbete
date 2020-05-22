@@ -1,0 +1,10 @@
+{
+	"info": {
+		"_postman_id": "12a9f6f7-e368-43e2-824a-0e8d82b44427",
+		"name": "Postman-testing",
+		"description": "This collection should contain tests for Bookstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [],
+	"protocolProfileBehavior": {}
+}
