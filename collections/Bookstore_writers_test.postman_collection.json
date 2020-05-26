@@ -1,0 +1,361 @@
+{
+	"info": {
+		"_postman_id": "918fb7c1-c88f-4e8f-8a8a-625a06856e85",
+		"name": "Bookstore_writers_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add 1/5 writer to bookstore",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ccd66c20-735a-4f00-94c6-d8ff32d2e998",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a86135f-dd82-4722-9258-4cc6e44decb4",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let jsonData = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"John Pemberton\",\n\t\"description\": \"On the Subject of Java\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add 2/5 writer to bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d169abed-a714-481f-8181-4b9eb5e6d95c",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let jsonData = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Bagoes Wiryomartono\",\n\t\"description\": \"Javanese Culture and the Meanings of Locality\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add 3/5 writer to bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7224746d-654b-4288-bf00-6529cd9037ab",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let jsonData = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Sir Thomas Stamford Raffles\",\n\t\"description\": \"A History of Java\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add 4/5 writer to bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "285e5ea4-f8c5-4405-8752-8e366855f87e",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let jsonData = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Magnus Lilja, Ulrik Nilsson, Bo Silborn\",\n\t\"description\": \"Programmering 1 Java\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add 5/5 writer to bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "87902591-879f-4d78-8596-5ccb9d9f8b73",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let jsonData = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Jan Skansholm\",\n\t\"description\": \"Java direkt med Swing\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read a new created writer from bookstore",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0845e0e4-906f-4627-92aa-5c2b9126b9c8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "eaaa45bc-a050-479b-849f-1a8ce466920e",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test('Writer\\'s name shouldn\\'t have a non empty string', function(){",
+							"    pm.expect(response.name).to.be.a.string",
+							"    pm.expect(response.name).to.not.equal('');",
+							"});",
+							"",
+							"pm.test('The description must be a non empty string', function(){",
+							"    pm.expect(response.description).to.be.a.string",
+							"    pm.expect(response.description).to.not.equal('');",
+							"});",
+							"",
+							"pm.test(\"Writer should have name and description\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let w of response) {",
+							"        pm.expect(w).to.have.any.keys('name', '');",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"Writer should have name and description\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let w of response) {",
+							"        pm.expect(w).to.have.any.keys('', 'description');",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"Writer should have name and description\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let w of response) {",
+							"        pm.expect(w).to.not.have.keys('title', '');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/35",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"35"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
