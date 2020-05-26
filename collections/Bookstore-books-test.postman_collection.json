@@ -1,0 +1,417 @@
+{
+	"info": {
+		"_postman_id": "494b3b98-5053-4dd3-8db1-16859beed6c0",
+		"name": "Bookstore books test",
+		"description": "This collection focuses on creating, updating, and deleting books and testing it",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fetch list of books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0e686f4b-b101-4f87-9942-96cd05d3539f",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('The title must be a non empty string', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('A book cannot be for free', function(){\r",
+							"    pm.expect(response.price).to.not.equal(0);\r",
+							"});\r",
+							"\r",
+							"pm.test('A book cannot have zero pages', function(){\r",
+							"    pm.expect(response.pages).to.not.equal(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create first book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-x\",\n\t\"title\": \"TestTitle1\",\n\t\"description\": \"This is a test book from postman testing\",\n\t\"pages\": 1117,\n\t\"price\": 1337\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "lastID 32"
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch recently created book and test it",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "30fd744e-d906-47ce-9285-eb7647ebe5f1",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/32",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"32"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create second book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-2\",\n\t\"title\": \"TestTitle2\",\n\t\"description\": \"This is a test book from postman testing2\",\n\t\"pages\": 1137,\n\t\"price\": 1217\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 33"
+			},
+			"response": []
+		},
+		{
+			"name": "Create third book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-3\",\n\t\"title\": \"TestTitle3\",\n\t\"description\": \"This is a test book from postman testing3\",\n\t\"pages\": 297,\n\t\"price\": 499\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 34"
+			},
+			"response": []
+		},
+		{
+			"name": "Create fourth book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-4\",\n\t\"title\": \"TestTitle4\",\n\t\"description\": \"This is a test book from postman testing4\",\n\t\"pages\": 497,\n\t\"price\": 431\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 35"
+			},
+			"response": []
+		},
+		{
+			"name": "Create fifth book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-5\",\n\t\"title\": \"TestTitle5\",\n\t\"description\": \"This is a test book from postman testing5\",\n\t\"pages\": 624,\n\t\"price\": 511\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 36"
+			},
+			"response": []
+		},
+		{
+			"name": "Create sixth book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-6\",\n\t\"title\": \"TestTitle6\",\n\t\"description\": \"This is a test book from postman testing6\",\n\t\"pages\": 401,\n\t\"price\": 331\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 37"
+			},
+			"response": []
+		},
+		{
+			"name": "Create seventh book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-7\",\n\t\"title\": \"TestTitle7\",\n\t\"description\": \"This is a test book from postman testing7\",\n\t\"pages\": 111,\n\t\"price\": 99\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 88"
+			},
+			"response": []
+		},
+		{
+			"name": "Create eigthth book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"000000117-8\",\n\t\"title\": \"TestTitle8\",\n\t\"description\": \"This is a test book from postman testing8\",\n\t\"pages\": 732,\n\t\"price\": 624\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				},
+				"description": "id 39"
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all created books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c5974263-817c-4a3f-9dc1-ce5fdf9117d8",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('The title must be a non empty string', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('A book cannot be for free', function(){\r",
+							"    pm.expect(response.price).to.not.equal(0);\r",
+							"});\r",
+							"\r",
+							"pm.test('A book cannot have zero pages', function(){\r",
+							"    pm.expect(response.pages).to.not.equal(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/?id%3E31&id%3C40",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						""
+					],
+					"query": [
+						{
+							"key": "id%3E31",
+							"value": null
+						},
+						{
+							"key": "id%3C40",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
