@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "918fb7c1-c88f-4e8f-8a8a-625a06856e85",
-		"name": "Bookstore_writers_test",
+		"name": "Bookstore-writers-test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -30,7 +30,7 @@
 							"",
 							"// Test affected rows",
 							"pm.test('one row should be changed', function(){",
-							"  let jsonData = pm.response.json();",
+							"  let response = pm.response.json();",
 							"  pm.expect(response.changes).to.equal(1);",
 							"});"
 						],
@@ -81,7 +81,7 @@
 							"",
 							"// Test affected rows",
 							"pm.test('one row should be changed', function(){",
-							"  let jsonData = pm.response.json();",
+							"  let response = pm.response.json();",
 							"  pm.expect(response.changes).to.equal(1);",
 							"});"
 						],
@@ -132,8 +132,14 @@
 							"",
 							"// Test affected rows",
 							"pm.test('one row should be changed', function(){",
-							"  let jsonData = pm.response.json();",
+							"  let response = pm.response.json();",
 							"  pm.expect(response.changes).to.equal(1);",
+							"});",
+							"",
+							"//check if this row has created",
+							"pm.test('one row should be created with the id 43', function(){",
+							"  let response = pm.response.json();",
+							"  pm.expect(response.lastID).to.equal(43);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -183,7 +189,7 @@
 							"",
 							"// Test affected rows",
 							"pm.test('one row should be changed', function(){",
-							"  let jsonData = pm.response.json();",
+							"  let response = pm.response.json();",
 							"  pm.expect(response.changes).to.equal(1);",
 							"});"
 						],
@@ -234,7 +240,7 @@
 							"",
 							"// Test affected rows",
 							"pm.test('one row should be changed', function(){",
-							"  let jsonData = pm.response.json();",
+							"  let response = pm.response.json();",
 							"  pm.expect(response.changes).to.equal(1);",
 							"});"
 						],
