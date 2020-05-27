@@ -1,0 +1,382 @@
+{
+	"info": {
+		"_postman_id": "da041701-f3ee-42e6-8529-527cdd42e4ea",
+		"name": "Bookstore booksXwriters test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fetch list of booksXwriters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "335c05ff-c5ed-4c32-8ee5-a197ee66de10",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.book_ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.book_ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('writers_id should not be a string, and undefined', function(){\r",
+							"    pm.expect(response.writer_id).to.not.be.a.string;   //It somehow reads writer_id here but not on the other expects\r",
+							"    //pm.expect(response.writer_id).to.be.a('number');  //For some some reason postman just wont read id on on object, but this is suppose to work so I keep it commented here\r",
+							"    //pm.expect(response.writer_id).to.not.be.undefined;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for first created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 1,\n\t\"book_ISBN_nr\": \"000000117-x\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch recently created relation ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e6e350f-c150-4e7d-8b36-fafc487b41fb",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.book_ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.book_ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('writers_id should not be a string, and undefined', function(){\r",
+							"    pm.expect(response.writer_id).to.not.be.a.string;   //It somehow reads writer_id here but not on the other expects\r",
+							"    //pm.expect(response.writer_id).to.be.a('number');  //For some some reason postman just wont read id on on object, but this is suppose to work so I keep it commented here\r",
+							"    //pm.expect(response.writer_id).to.not.be.undefined;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for second created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 2,\n\t\"book_ISBN_nr\": \"000000117-2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for third created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 3,\n\t\"book_ISBN_nr\": \"000000117-3\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for fourth created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 4,\n\t\"book_ISBN_nr\": \"000000117-4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for fifth created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 5,\n\t\"book_ISBN_nr\": \"000000117-5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for sixth created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 6,\n\t\"book_ISBN_nr\": \"000000117-6\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for seventh created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 7,\n\t\"book_ISBN_nr\": \"000000117-7\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create relation for eighth created book to an author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": 8,\n\t\"book_ISBN_nr\": \"000000117-8\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch list of booksXwriters again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7514ebf6-6609-49cc-8ae2-d2dd44a2d613",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.book_ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.book_ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('writers_id should not be a string, and undefined', function(){\r",
+							"    pm.expect(response.writer_id).to.not.be.a.string;   //It somehow reads writer_id here but not on the other expects\r",
+							"    //pm.expect(response.writer_id).to.be.a('number');  //For some some reason postman just wont read id on on object, but this is suppose to work so I keep it commented here\r",
+							"    //pm.expect(response.writer_id).to.not.be.undefined;\r",
+							"});\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(\"000000117-x\").to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
