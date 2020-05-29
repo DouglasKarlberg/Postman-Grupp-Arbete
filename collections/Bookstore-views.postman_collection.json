@@ -1,0 +1,224 @@
+{
+	"info": {
+		"_postman_id": "778c0622-9436-4063-b672-b09de85df7a0",
+		"name": "Bookstore-views",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "books sold per month",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4e2b636d-a502-47b0-afb2-11ddb83406ee",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Books that are sold should have an amount and earned without taxes properties\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let b of response) {",
+							"        pm.expect(b).to.have.any.keys('AmountOfBooksSold', 'AmountOfMoneyEarnedPerMonthWithoutTaxes');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/amount_of_books_sold_per_month/?year_month=2020-01",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"amount_of_books_sold_per_month",
+						""
+					],
+					"query": [
+						{
+							"key": "year_month",
+							"value": "2020-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "books and writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca2639bc-77e1-4bc7-9eec-55faa18740cf",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Books and writers\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let b of response) {",
+							"        pm.expect(b).to.have.any.keys('bookTitle', 'bookDescription','','','');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books_and_writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books_and_writers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "order details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "49346376-7c8c-41f2-85ed-05c0c4b3fb33",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/order_details",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"order_details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "amount paid per client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "33ec1a1f-6b10-44a6-9629-56e295038445",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"amount paid per client properties\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let a of response) {",
+							"        pm.expect(a).to.have.any.keys('email', '');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/total_amount_paid_per_client/?email=sdomerq9@cbsnews.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"total_amount_paid_per_client",
+						""
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "sdomerq9@cbsnews.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "total price per order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8c94357f-e493-43d4-aad7-aade12de6556",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"total price per order\", function(){",
+							"    let response = pm.response.json();",
+							"    for(let t of response) {",
+							"        pm.expect(t).to.have.any.keys('orderNumber', '');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/total_price_per_order/?orderNumber=3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"total_price_per_order",
+						""
+					],
+					"query": [
+						{
+							"key": "orderNumber",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
