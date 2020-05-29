@@ -1,0 +1,355 @@
+{
+	"info": {
+		"_postman_id": "366151ad-7f67-4007-9e71-be53dd1b2a2a",
+		"name": "Bookstore-book-test-SHIP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create books",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbf821e-9a73-4658-83b2-6d8771724db7",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-1\",\r",
+							"        \"title\": \"Test DailyScrub Book 1\",\r",
+							"        \"description\": \"This is a test description for Test DailyScrub Book 1.\",\r",
+							"        \"pages\": 429,\r",
+							"        \"price\": 399\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-2\",\r",
+							"        \"title\": \"Test FullHD Book 2\",\r",
+							"        \"description\": \"This is a test description for Test FullHD Book 2.\",\r",
+							"        \"pages\": 322,\r",
+							"        \"price\": 345\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-3\",\r",
+							"        \"title\": \"Test Responsible Book 3\",\r",
+							"        \"description\": \"This is a test description for Test Responsible Book 3.\",\r",
+							"        \"pages\": 546,\r",
+							"        \"price\": 530\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-4\",\r",
+							"        \"title\": \"Test Workspace Book 4\",\r",
+							"        \"description\": \"This is a test description for Test Workspace Book 4.\",\r",
+							"        \"pages\": 670,\r",
+							"        \"price\": 645\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-5\",\r",
+							"        \"title\": \"Test Rollercoaster Book 5\",\r",
+							"        \"description\": \"This is a test description for Test Rollercoaster Book 5.\",\r",
+							"        \"pages\": 310,\r",
+							"        \"price\": 299\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-6\",\r",
+							"        \"title\": \"Test Postman Book 6\",\r",
+							"        \"description\": \"This is a test description for Test Postman Book 6.\",\r",
+							"        \"pages\": 220,\r",
+							"        \"price\": 205\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-7\",\r",
+							"        \"title\": \"Test Earthbound Book 7\",\r",
+							"        \"description\": \"This is a test description for Test Earthbound Book 7.\",\r",
+							"        \"pages\": 233,\r",
+							"        \"price\": 209\r",
+							"      },\r",
+							"      {\r",
+							"        \"ISBN_nr\": \"00000117-8\",\r",
+							"        \"title\": \"Test Macross Book 8\",\r",
+							"        \"description\": \"This is a test description for Test Macross Book 8.\",\r",
+							"        \"pages\": 202,\r",
+							"        \"price\": 199\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {ISBN_nr, title, description, pages, price} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('ISBN_nr', ISBN_nr);\r",
+							" pm.environment.set('title', title);\r",
+							" pm.environment.set('description', description);\r",
+							" pm.environment.set('pages', pages);\r",
+							" pm.environment.set('price', price);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ba56d9e7-2969-4fae-b8cf-0a9862a0b3b6",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create books');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ISBN_nr\": \"{{ISBN_nr}}\",\n  \"title\": \"{{title}}\",\n  \"description\": \"{{description}}\",\n  \"pages\": \"{{pages}}\",\n  \"price\": \"{{price}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f067d82c-6da3-4846-b39c-124452c40f82",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Title shoule be an non empty string', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"//If books were created the response length (the length of writers in database) should have gone from 20 to 25\r",
+							"pm.test('total count must be 38', function(){pm.expect(response.length).to.equal(38);}); //Expect length to be 25\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete books",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "36bc3d3a-9b0a-4cce-a58a-a4c8cd119859",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6b7e643b-86c0-4df1-a6ba-afd5c9c3eeb1",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Delete books');\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b860da39-d747-4946-af8a-9f22e5607b7a",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"//If books were deleted the response length (the length of writers in database) should have gone from 38 to 30\r",
+							"pm.test('total count must be 30', function(){pm.expect(response.length).to.equal(30);}); //Expect length to be 30\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('Writer\\'s name shouldn\\'t have a non empty string', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Book should have key named title\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('title', '');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Book should have ISBN_nr\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'ISBN_nr');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Book should have description\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'description');\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ISBN_nr\": \"{{ISBN_nr}}\",\n  \"title\": \"{{title}}\",\n  \"description\": \"{{description}}\",\n  \"pages\": \"{{pages}}\",\n  \"price\": \"{{price}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
