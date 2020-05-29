@@ -1,0 +1,160 @@
+{
+	"info": {
+		"_postman_id": "96f0bc5f-81ac-42a6-9ccf-b52be1e3f267",
+		"name": "Bookstore client test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create client",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d2b0f314-7e45-4314-af8c-d2aba7637cd0",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      \r",
+							"      {\r",
+							"        \"email\": \"mnsgfm@mail.com\"\r",
+							"      },\r",
+							"      {\r",
+							"       \"email\": \"mntm@mail.com\"\r",
+							"      },\r",
+							"      {\r",
+							"       \"email\": \"mnfsm@mail.com\"\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {email} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('email', email);\r",
+							" "
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7255336b-8198-4d13-9269-53cb7eed4816",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create writer');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{email}}\"\r\n  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all clients ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c301ffb7-e518-4922-85a3-36e433816d50",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"//Success when test shows \r",
+							"pm.test(\"Test run successfully \", function() {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//Check if client has email \r",
+							"pm.test(\"Client should have email\", function(){\r",
+							"    for(let ol of response) {\r",
+							"        pm.expect(ol).to.have.any.keys('email', '');\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
