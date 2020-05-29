@@ -1,0 +1,628 @@
+{
+	"info": {
+		"_postman_id": "e2ce9a43-4682-4cc3-b30e-aac4bb59541f",
+		"name": "Bookstore-orders-orderlines-test",
+		"description": "Tests for orders and orderlines",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "make an order to bookstore",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "26aceb9c-7d07-4df8-9458-c84442a5bfc5",
+						"exec": [
+							"if(!pm.environment.has(\"fakeData\")){\r",
+							"    let fakeData=[\r",
+							"        {\r",
+							"        \"date\": \"2020-04-22 12:12:12\", \r",
+							"        \"client_email\":\"didi@gmail.com\"\r",
+							"        },\r",
+							"        {\r",
+							"        \"date\": \"2020-04-22 13:05:12\", \r",
+							"        \"client_email\":\"dodo@hotmail.com\"\r",
+							"        },\r",
+							"        {\r",
+							"        \"date\": \"2020-04-22 14:05:15\", \r",
+							"        \"client_email\":\"dado@gmail.com\"\r",
+							"        }\r",
+							"    ]; \r",
+							"    pm.environment.set(\"counter\", 3);\r",
+							"    pm.environment.set(\"fakeData\", JSON.stringify(fakeData));\r",
+							"\r",
+							"}\r",
+							"\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let fakeData = JSON.parse(pm.environment.get(\"fakeData\"));\r",
+							"let {date, client_email} = fakeData[counter]\r",
+							"\r",
+							"pm.environment.set('date', date);\r",
+							"pm.environment.set('client_email', client_email);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ad0bc84-5b68-4cd3-a863-11b90ea47b05",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let fakeData = JSON.parse(pm.environment.get(\"fakeData\"));\r",
+							"\r",
+							"fakeData[counter].id = response.lastID;\r",
+							"pm.environment.set('fakeData', JSON.stringify(fakeData));\r",
+							"\r",
+							"//Success when test shows 200 as status code\r",
+							"pm.test(\"Run the test by status code 200 \", function() {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//check if order has not description in its content\r",
+							"pm.test(\"Order should not have description in its content\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"        pm.expect(response).to.not.have.keys('description', '');\r",
+							"});\r",
+							"\r",
+							"counter++;\r",
+							"pm.environment.set('Counter', counter);\r",
+							"\r",
+							"if(fakeData[counter]){\r",
+							"    postman.setNextRequest('Make an order');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\":\"{{date}}\",\n\t\"client_email\":\"{{client_email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						""
+					]
+				},
+				"description": "Tests for POST orders"
+			},
+			"response": []
+		},
+		{
+			"name": "read all orders from bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b534b8fe-780e-475d-88d2-2e218cd67929",
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test('Order\\'s date shouldn\\'t have a non empty string', function(){",
+							"    pm.expect(response.date).to.be.a.string",
+							"    pm.expect(response.date).to.not.equal('');",
+							"});",
+							"",
+							"pm.test('Order\\'s client email shouldn\\'t have a a non empty string', function(){",
+							"    pm.expect(response.client_email).to.be.a.string",
+							"    pm.expect(response.client_email).to.not.equal('');",
+							"});",
+							"",
+							"pm.test('Order should have a date', function(){",
+							"    let response = pm.response.json();",
+							"    for(let o of response) {",
+							"        pm.expect(o).to.have.any.keys('date', '');",
+							"    }",
+							"});",
+							"",
+							"pm.test('Order should have a client_email', function(){",
+							"    let response = pm.response.json();",
+							"    for(let o of response) {",
+							"        pm.expect(o).to.have.any.keys('', 'client_email');",
+							"    }",
+							"});",
+							"",
+							"pm.test('Order should have a date and client_email but not a description', function(){",
+							"    let response = pm.response.json();",
+							"    for(let o of response) {",
+							"        pm.expect(o).to.not.have.keys('description', '');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders"
+					]
+				},
+				"description": "Tests for GET orders"
+			},
+			"response": []
+		},
+		{
+			"name": "Orderlines for orders made in bookstore",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bc21d27a-6b47-41ec-bc7e-9b761a8c10bb",
+						"exec": [
+							"if(!pm.environment.has(\"fakeData\")){\r",
+							"    let fakeData=[\r",
+							"        {\r",
+							"        \"amount\":\"3\", \r",
+							"        \"book_ISBN_nr\":\"9789144085876-9\"\r",
+							"        },\r",
+							"        {\r",
+							"        \"amount\":\"5\", \r",
+							"        \"book_ISBN_nr\":\"9789144104317-7\"\r",
+							"        },\r",
+							"        {\r",
+							"        \"amount\":\"6\", \r",
+							"        \"book_ISBN_nr\":\"9789144048307-8\"\r",
+							"        }\r",
+							"    ]; \r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"fakeData\", JSON.stringify(fakeData));\r",
+							"\r",
+							"}\r",
+							"\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let fakeData = JSON.parse(pm.environment.get(\"fakeData\"));\r",
+							"let {amount, book_ISBN_nr} = fakeData[counter]\r",
+							"\r",
+							"pm.environment.set('amount', amount);\r",
+							"pm.environment.set('book_ISBN_nr', book_ISBN_nr);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "10a9d252-7e4e-4c39-ac61-1972a6907637",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let fakeData = JSON.parse(pm.environment.get(\"fakeData\"));\r",
+							"\r",
+							"fakeData[counter].id = response.lastID;\r",
+							"pm.environment.set('fakeData', JSON.stringify(fakeData));\r",
+							"\r",
+							"//Success when test shows 200 as status code\r",
+							"pm.test(\"Run the test by status code 200 \", function() {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//check if order has not description in its content\r",
+							"pm.test(\"Orderlines should not have description in its content\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"        pm.expect(response).to.not.have.keys('description', '');\r",
+							"});\r",
+							"\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"if(fakeData[counter]){\r",
+							"    postman.setNextRequest('It has an orderline');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\":\"{{amount}}\",\n\t\"book_ISBN_nr\":\"{{book_ISBN_nr}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				},
+				"description": "Tests for POST orderlines"
+			},
+			"response": []
+		},
+		{
+			"name": "read all orderlines from bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9ecc10f1-fb66-4b61-b966-ccbac58e848b",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Orderline\\'s amount shouldn\\'t have a non empty string', function(){\r",
+							"    pm.expect(response.amount).to.be.a.string\r",
+							"    pm.expect(response.amount).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('Orderline\\'s book ISBN number shouldn\\'t have a a non empty string', function(){\r",
+							"    pm.expect(response.book_ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.book_ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('Orderlines should have an amount', function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let ol of response) {\r",
+							"        pm.expect(ol).to.have.any.keys('amount', '');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test('Orderlines should have a book ISBN number', function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let ol of response) {\r",
+							"        pm.expect(ol).to.have.any.keys('', 'book_ISBN_nr');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test('Orderlines should have an amount and a book ISBN number but not a description', function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let ol of response) {\r",
+							"        pm.expect(ol).to.not.have.keys('description', '');\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete last order from bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "626c623c-c0cc-4cec-be3e-dbd928a21b38",
+						"exec": [
+							"",
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"//check if this order is deleted, if not it will fail",
+							"pm.test('This row is deleted', function(){",
+							"  let response = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});",
+							"",
+							"//check if this order is affected by the changes",
+							"pm.test('This row is deleted', function(){",
+							"  let response = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "77db0b9e-17f6-45ee-9e17-85d89eefbd01",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/42",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"42"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read all latest orders from bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d7e3e7d8-3379-4e2e-a71b-9ab7de61184f",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete last orderline from bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d3dec008-c2ce-499b-b7d9-c157e030b9f7",
+						"exec": [
+							"",
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"//check if this orderline is deleted and if not it will fail",
+							"pm.test('This row is deleted', function(){",
+							"    let response = pm.response.json();",
+							"    pm.expect(response.changes).to.equal(1);",
+							"});",
+							"",
+							"//This fails if the row is not affected by the changes",
+							"pm.test('This row is not affected', function() {",
+							"    let response = pm.response.json();",
+							"    pm.expect(response.changes).to.equal(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/21",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"21"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read all latest orderlines from bookstore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f4f967c-c1eb-49d3-bcb4-6913662a43f4",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update an order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb0dba1f-2814-4bd7-971f-4426d73e6031",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let response = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": \"2020-04-22 12:12:12\",\n\t\"client_email\": \"didi@changetohotmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders/41",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"41"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update an orderline",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "705b8f70-c1f6-4b14-85a2-183bc640ef74",
+						"exec": [
+							"//Success when test shows 200 as status code",
+							"pm.test(\"Run the test by status code 200 \", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test affected rows",
+							"pm.test('one row should be changed', function(){",
+							"  let response = pm.response.json();",
+							"  pm.expect(response.changes).to.equal(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": \"6\",\n\t\"book_ISBN_nr\": \"010112225-4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/28",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"28"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
