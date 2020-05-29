@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "a18fef63-1c20-46fc-bcce-b0cde2a6666d",
+		"name": "Bookstore-writer-test-SHIP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create writer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a615c7d8-52f9-4309-9d17-2e4b8725baf3",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      {\r",
+							"        \"name\": \"Test BlueBird Author 1\",\r",
+							"        \"description\": \"This is the test description for Test Author 1.\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Test YellowPalmtree Author 2\",\r",
+							"        \"description\": \"This is the test description for Test Author 2.\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Test OrangeBoat Author 3\",\r",
+							"        \"description\": \"This is the test description for Test Author 3\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Test GreyCrow Author 4\",\r",
+							"        \"description\": \"This is the test description for Test Author 4.\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Test PurpleParachute Author 5\",\r",
+							"        \"description\": \"This is the test description for Test Author 5\"\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {name, description} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('name', name);\r",
+							" pm.environment.set('description', description);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6ec5b725-1b3f-4cb2-9b9e-80a4afb34110",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create writer');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"description\": \"{{description}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all writers",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3c94b336-5df7-422d-8d0a-1a3f06b0335b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f91fe226-5106-4f22-98fb-c12ef4818451",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Writer\\'s name shouldn\\'t have a non empty string', function(){\r",
+							"    pm.expect(response.name).to.be.a.string\r",
+							"    pm.expect(response.name).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"//If books were created the response length (the length of writers in database) should have gone from 20 to 25\r",
+							"pm.test('total count must be 25', function(){pm.expect(response.length).to.equal(25);}); //Expect length to be 25\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete writer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acd49c95-ba7c-4376-ba44-0d1514cb21bf",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2a4820d-ad27-4a4a-99be-aada777c7542",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Delete writer');\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31b52bb9-db98-42cb-aee6-9f8994a92c0c",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"//If books were deleted the response length (the length of writers in database) should have gone from 25 to 20\r",
+							"pm.test('total count must be 20', function(){pm.expect(response.length).to.equal(20);}); //Expect length to be 20\r",
+							"\r",
+							"pm.test('Writer\\'s name shouldn\\'t have a non empty string', function(){\r",
+							"    pm.expect(response.name).to.be.a.string\r",
+							"    pm.expect(response.name).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Writer should have name and description\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('name', '');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Writer should have name and description\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'description');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Writer should have name and description\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.not.have.keys('title', '');\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"description\": \"{{description}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
