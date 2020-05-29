@@ -1,0 +1,272 @@
+{
+	"info": {
+		"_postman_id": "e833c846-1d23-40e9-b8d6-3314e243fb2a",
+		"name": "Bookstore-update-book-test-SHIP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Read a book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update the books values",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ISBN_nr\": \"123456789-Y\",\n  \"title\": \"Test Update Title\",\n  \"description\": \"This is a test description update\",\n  \"pages\": \"1000\",\n  \"price\": \"2000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read updated book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7a9d9ccf-8bce-4b10-98b7-04fdb51b7706",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string and match the update', function(){\r",
+							"    pm.expect(response.ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.ISBN_nr).to.not.equal('');\r",
+							"    pm.expect(response.ISBN_nr).to.equal('123456789-Y');\r",
+							"});\r",
+							"\r",
+							"pm.test('The title must be a non empty string and match the update', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"    pm.expect(response.title).to.equal('Test Update Title');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string and match the update', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"    pm.expect(response.description).to.equal('This is a test description update');\r",
+							"});\r",
+							"\r",
+							"pm.test('The pages must not be a string and match the update', function(){\r",
+							"    pm.expect(response.pages).to.not.be.a.string\r",
+							"    //pm.expect(response.pages).to.not.equal('');\r",
+							"    pm.expect(response.pages).to.equal(1000);\r",
+							"});\r",
+							"\r",
+							"pm.test('The price must not be a string and match the update', function(){\r",
+							"    pm.expect(response.price).to.not.be.a.string\r",
+							"    //pm.expect(response.pages).to.not.equal('');\r",
+							"    pm.expect(response.price).to.equal(2000);\r",
+							"});\r",
+							"\r",
+							"/*\r",
+							"pm.test('The ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('Writer\\'s name shouldn\\'t have a non empty string', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Book should have key named title\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('title', '');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Book should have ISBN_nr\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'ISBN_nr');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Book should have description\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'description');\r",
+							"    }\r",
+							"});\r",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update the book to its original values",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ISBN_nr\": \"919485033-X\",\n  \"title\": \"Bathory\",\n  \"description\": \"Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\",\n  \"pages\": \"4980\",\n  \"price\": \"1571.77\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ready updated book again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b7f4246f-3d5f-4910-aa55-e9f71c47c366",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test('The ISBN_nr must be a non empty string and match the update', function(){\r",
+							"    pm.expect(response.ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.ISBN_nr).to.not.equal('');\r",
+							"    pm.expect(response.ISBN_nr).to.equal('919485033-X');\r",
+							"});\r",
+							"\r",
+							"pm.test('The title must be a non empty string and match the update', function(){\r",
+							"    pm.expect(response.title).to.be.a.string\r",
+							"    pm.expect(response.title).to.not.equal('');\r",
+							"    pm.expect(response.title).to.equal('Bathory');\r",
+							"});\r",
+							"\r",
+							"pm.test('The description must be a non empty string and match the update', function(){\r",
+							"    pm.expect(response.description).to.be.a.string\r",
+							"    pm.expect(response.description).to.not.equal('');\r",
+							"    pm.expect(response.description).to.equal('Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.');\r",
+							"});\r",
+							"\r",
+							"pm.test('The pages must not be a string and match the update', function(){\r",
+							"    pm.expect(response.pages).to.not.be.a.string\r",
+							"    //pm.expect(response.pages).to.not.equal('');\r",
+							"    pm.expect(response.pages).to.equal(4980);\r",
+							"});\r",
+							"\r",
+							"pm.test('The price must not be a string and match the update', function(){\r",
+							"    pm.expect(response.price).to.not.be.a.string\r",
+							"    //pm.expect(response.pages).to.not.equal('');\r",
+							"    pm.expect(response.price).to.equal(1571.77);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
