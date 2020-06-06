@@ -169,16 +169,57 @@
 						"exec": [
 							"// The response\r",
 							"let response = pm.response.json();\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('Check each element in mockData and expect it to deep include the response', function(){\r",
+							"     pm.expect(response).to.deep.include(mockData[counter]);    //Expectr response to include whats inside mockData arrayn on each elemern (counter)\r",
+							"});\r",
+							"\r",
+							"//id receives mockData[counter]'s elements' id\r",
+							"let id= mockData[counter].id;       //Will be fetched into delete step\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;                                     //counter counts up\r",
+							"pm.environment.set('counter', counter);         \r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch all books');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); } \r",
+							"\r",
 							"\r",
 							"pm.test('Title shoule be an non empty string', function(){\r",
 							"    pm.expect(response.title).to.be.a.string\r",
 							"    pm.expect(response.title).to.not.equal('');\r",
 							"});\r",
 							"\r",
+							"/*\r",
 							"//If books were created the response length (the length of writers in database) should have gone from 20 to 25\r",
 							"pm.test('total count must be 38', function(){pm.expect(response.length).to.equal(38);}); //Expect length to be 25\r",
-							"\r",
+							"*/\r",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b302032a-e074-4003-8924-6fb2bfd05a5a",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
 						],
 						"type": "text/javascript"
 					}
@@ -188,7 +229,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/books",
+					"raw": "http://localhost:3000/api/books/{{id}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -196,7 +237,99 @@
 					"port": "3000",
 					"path": [
 						"api",
-						"books"
+						"books",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update books",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d29c5fa7-7e8a-45ed-972a-687406c4034f",
+						"exec": [
+							"// counter receives the eviroment variable devided by 1\r",
+							"let counter = pm.environment.get(\"counter\") / 1;   \r",
+							"\r",
+							"\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"//id receives mockData arrays elements' id\r",
+							"let id = mockData[counter].id\r",
+							"\r",
+							"mockData.map(x => x.price= 440) //loop through mockData array with x and change price to 440 on each id in the created books\r",
+							"\r",
+							"let {ISBN_nr, title, description, pages, price} = mockData[counter]\r",
+							" \r",
+							"pm.environment.set('id',id);\r",
+							"\r",
+							"pm.environment.set('price',price)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7a7a73b5-3a53-4807-a49d-26085497ac4b",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let id=pm.environment.get(\"id\");\r",
+							"\r",
+							"//Test if response status returns 200\r",
+							"pm.test(\"Check if response status returns 200\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);    //Check response status if it has 200, the change was an success\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Update books');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); } "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"price\": \"{{price}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{id}}"
 					]
 				}
 			},
@@ -229,9 +362,17 @@
 							"// The response\r",
 							"let response = pm.response.json();\r",
 							"\r",
-							"// Reading/parsing environment variables back to local variables\r",
 							"let counter = pm.environment.get(\"counter\") / 1;\r",
 							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let id=pm.environment.get(\"id\");\r",
+							"\r",
+							"\r",
+							"//Test if response status returns 200\r",
+							"pm.test(\"Check if response status returns 200\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);    //Check response status if it has 200, the change was an success\r",
+							"\r",
+							"});\r",
 							"\r",
 							"// Increment the counter and save to environment\r",
 							"counter++;\r",
@@ -240,7 +381,15 @@
 							"// Run request again if more mockdata\r",
 							"if(mockData[counter]){\r",
 							"    postman.setNextRequest('Delete books');\r",
-							"}"
+							"}\r",
+							"else {\r",
+							"\r",
+							"  pm.environment.set(\"counter\", 0);     //reset counter to 0\r",
+							"  pm.environment.unset(\"id\") \r",
+							"\r",
+							"} \r",
+							"\r",
+							"///////////////////////////////"
 						],
 						"type": "text/javascript"
 					}
@@ -266,12 +415,101 @@
 			"response": []
 		},
 		{
-			"name": "Fetch all books",
+			"name": "Fetch books again",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"id": "b860da39-d747-4946-af8a-9f22e5607b7a",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('The data in db should not have the new mockdata any longer', function(){\r",
+							"    pm.expect(response).to.be.an('array').that.is.empty;\r",
+							"});\r",
+							"\r",
+							"let id= mockData[counter].id;\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch books again');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); \r",
+							"  \r",
+							"} \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "399b7315-d647-4b8b-afa6-314509c8b0dc",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all books again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d67aa688-23d1-45a1-898c-02f1e3e3a852",
 						"exec": [
 							"// The response\r",
 							"let response = pm.response.json();\r",
@@ -313,28 +551,15 @@
 							"    for(let w of response) {\r",
 							"        pm.expect(w).to.have.any.keys('', 'description');\r",
 							"    }\r",
-							"});\r",
-							""
+							"});"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"ISBN_nr\": \"{{ISBN_nr}}\",\n  \"title\": \"{{title}}\",\n  \"description\": \"{{description}}\",\n  \"pages\": \"{{pages}}\",\n  \"price\": \"{{price}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "http://localhost:3000/api/books",
 					"protocol": "http",
