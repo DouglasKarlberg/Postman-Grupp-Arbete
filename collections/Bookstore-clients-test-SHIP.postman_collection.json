@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "9bca1c56-e5aa-4bf4-97f0-9e37517ffae1",
+		"name": "Bookstore-clients-test-SHIP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "55c83db6-5df3-466b-b722-9d0744b17b22",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      {\r",
+							"        \"email\": \"DouglasTest@protonmail.com\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"email\": \"SultanTest@hotmail.com\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"email\": \"MohamadTest@gmail.com\"\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {email} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('email', email);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4aeb6eab-e00d-4576-8cff-ab373a040fb8",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create clients');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "826a0cdc-52b5-48e4-bb32-1c286c64af3a",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('Check each element in mockData and expect it to deep include the response', function(){\r",
+							"     pm.expect(response).to.deep.include(mockData[counter]);    //Expectr response to include whats inside mockData arrayn on each elemern (counter)\r",
+							"});\r",
+							"\r",
+							"//id receives mockData[counter]'s elements' id\r",
+							"let id= mockData[counter].id;       //Will be fetched into delete step\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;                                     //counter counts up\r",
+							"pm.environment.set('counter', counter);         \r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch all clients');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"} \r",
+							"\r",
+							"\r",
+							"pm.test('email should be an non empty string', function(){\r",
+							"    pm.expect(response.email).to.be.a.string\r",
+							"    pm.expect(response.email).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"/*\r",
+							"pm.test('email shoule be an non empty string', function(){\r",
+							"    pm.expect(response.email).to.be.a.string\r",
+							"    pm.expect(response.email).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"//If clients were created the response length (the length of writers in database) should have gone from 20 to 23\r",
+							"pm.test('total count must be 23', function(){pm.expect(response.length).to.equal(23);}); //Expect length to be 23\r",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8081f71c-fd47-4fc8-b747-b935858bb3ab",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "03bd79db-43cc-4e8e-81db-2af5de9b0be3",
+						"exec": [
+							"// counter receives the eviroment variable devided by 1\r",
+							"let counter = pm.environment.get(\"counter\") / 1;   \r",
+							"\r",
+							"\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"//id receives mockData arrays elements' id\r",
+							"let id = mockData[counter].id\r",
+							"\r",
+							"mockData.map(x => x.email = \"ChangedEmail@hotmail.com\") //loop through mockData array with x and change email to be \"ChangedEmail@hotmail.com\" on each id in the created books\r",
+							"\r",
+							"let {email} = mockData[counter]\r",
+							" \r",
+							"pm.environment.set('id',id);\r",
+							"\r",
+							"pm.environment.set('email',email)\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b4d80a51-2804-4655-99d5-ec5997c667b3",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "33ff25ed-3155-4a47-bdcf-372f47d14fbd",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let id=pm.environment.get(\"id\");\r",
+							"\r",
+							"\r",
+							"//Test if response status returns 200\r",
+							"pm.test(\"Check if response status returns 200\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);    //Check response status if it has 200, the change was an success\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Delete clients');\r",
+							"}\r",
+							"else {\r",
+							"\r",
+							"  pm.environment.set(\"counter\", 0);     //reset counter to 0\r",
+							"  pm.environment.unset(\"id\") \r",
+							"\r",
+							"} \r",
+							"\r",
+							"///////////////////////////////"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch clients again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3583837b-11a6-43a2-82cd-3c3fbbe85e37",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"let id= mockData[counter].id;\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch clients again');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); \r",
+							"  \r",
+							"} \r",
+							"\r",
+							"\r",
+							"/*\r",
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"//If clients were deleted the response length (the length of clients in database) should have gone from 23 to 20\r",
+							"pm.test('total count must be 20', function(){pm.expect(response.length).to.equal(20);}); //Expect length to be 20\r",
+							"\r",
+							"pm.test('email must be a non empty string', function(){\r",
+							"    pm.expect(response.email).to.be.a.string\r",
+							"    pm.expect(response.email).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"clients should have key named email\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('email', '');\r",
+							"    }\r",
+							"});*/\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "96466258-8043-4de3-854b-7824cc223361",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all clients again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a37048f9-286c-498c-844f-428466c06a9c",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"//If clients were deleted the response length (the length of clients in database) should have gone from 23 to 20\r",
+							"pm.test('total count must be 20', function(){pm.expect(response.length).to.equal(20);}); //Expect length to be 20\r",
+							"\r",
+							"pm.test('The email must be a non empty string', function(){\r",
+							"    pm.expect(response.email).to.be.a.string\r",
+							"    pm.expect(response.email).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"client should have email\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('email', '');\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
