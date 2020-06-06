@@ -262,6 +262,7 @@
 							"let id = mockData[counter].id\r",
 							"\r",
 							"mockData.map(x => x.price= 440) //loop through mockData array with x and change price to 440 on each id in the created books\r",
+							"mockData.map(y => y.price= 1050) //loop through mockData array with x and change pages to 1050 on each id in the created books\r",
 							"\r",
 							"let {ISBN_nr, title, description, pages, price} = mockData[counter]\r",
 							" \r",
@@ -312,7 +313,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"price\": \"{{price}}\"\r\n}\r\n",
+					"raw": "{\r\n  \"price\": \"{{price}}\"\r\n  \"pages\": \"{{pages}}\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
