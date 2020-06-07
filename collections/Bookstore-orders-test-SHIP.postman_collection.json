@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "54ff86f1-4cf6-4a64-82ab-0e8f9a7abcdb",
+		"name": "Bookstore-orders-test-SHIP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f49586bc-1015-4564-a58f-31a828b69f01",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      {\r",
+							"        \"date\": \"2020-06-07 13:37:02\",\r",
+							"        \"client_email\": \"aaffleck1@ask.com\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"date\": \"2020-03-12 20:23:00\",\r",
+							"        \"client_email\": \"jsandeford2@ihg.com\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"date\": \"2019-12-04 08:02:59\",\r",
+							"        \"client_email\": \"tevennett3@wikispaces.com\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"date\": \"2019-08-22 01:37:24\",\r",
+							"        \"client_email\": \"nscales4@mayoclinic.com\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"date\": \"2020-01-01 00:01:00\",\r",
+							"        \"client_email\": \"aanscombe5@shutterfly.com\"\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {date, client_email} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('date', date);\r",
+							" pm.environment.set('client_email', client_email);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7e21e271-5aed-4af2-aa71-09fdf779001f",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create orders');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date\": \"{{date}}\",\n  \"client_email\": \"{{client_email}}\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a7f3a431-90e2-4fa4-ad11-a7d24e5e22dc",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ec8f94f1-9ae5-41fb-a0ab-87f3d2a3278f",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('Check each element in mockData and expect it to deep include the response', function(){\r",
+							"     pm.expect(response).to.deep.include(mockData[counter]);    //Expect response to include whats inside mockData arrayn on each elemern (counter)\r",
+							"});\r",
+							"\r",
+							"//id receives mockData[counter]'s elements' id\r",
+							"let id= mockData[counter].id;       //Will be fetched into delete step\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;                                     //counter counts up\r",
+							"pm.environment.set('counter', counter);         \r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch all orders');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); \r",
+							"} \r",
+							"\r",
+							"\r",
+							"pm.test('Title shoule be an non empty string', function(){\r",
+							"    pm.expect(response.client_email).to.be.a.string\r",
+							"    pm.expect(response.client_email).to.not.equal('');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "07fabbda-84a2-4580-b7bf-fdc9fd43ed2c",
+						"exec": [
+							"// counter receives the eviroment variable devided by 1\r",
+							"let counter = pm.environment.get(\"counter\") / 1;   \r",
+							"\r",
+							"\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"//id receives mockData arrays elements' id\r",
+							"let id = mockData[counter].id\r",
+							"\r",
+							"mockData.map(x => x.date= \"2020-02-20 20:20:20\") //loop through mockData array with x and change price to 440 on each id in the created books\r",
+							"\r",
+							"let {date, client_email} = mockData[counter]\r",
+							" \r",
+							"pm.environment.set('id',id);\r",
+							"\r",
+							"pm.environment.set('date',date)\r",
+							"pm.environment.set('client_email', client_email)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "66fa6fc7-fd6d-41bf-a697-ad88d1aae2c2",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let id=pm.environment.get(\"id\");\r",
+							"\r",
+							"//Test if response status returns 200\r",
+							"pm.test(\"Check if response status returns 200\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);    //Check response status if it has 200, the change was an success\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Update orders');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"} "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date\": \"{{date}}\",\n  \"client_email\": \"{{client_email}}\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b986a24c-aff5-434d-930a-2dcc55405ac3",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1a0b48d3-7e22-4b43-84ed-9496e6ea1e4c",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let id=pm.environment.get(\"id\");\r",
+							"\r",
+							"\r",
+							"//Test if response status returns 200\r",
+							"pm.test(\"Check if response status returns 200\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);    //Check response status if it has 200, the change was an success\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Delete orders');\r",
+							"}\r",
+							"else {\r",
+							"\r",
+							"  pm.environment.set(\"counter\", 0);     //reset counter to 0\r",
+							"  pm.environment.unset(\"id\") \r",
+							"\r",
+							"} \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch orders again",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ee17514e-24d2-4c43-966e-fe071f4264ac",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e0612ac-c67c-4b7c-9d09-c58c0d7f3cc9",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('The data in db should not have the new mockdata any longer', function(){\r",
+							"    pm.expect(response).to.be.an('array').that.is.empty;\r",
+							"});\r",
+							"\r",
+							"let id= mockData[counter].id;\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch orders again');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); \r",
+							"} \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all orders again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4acda19b-d5c4-46c6-80e6-8a14ed7a90ec",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"//If books were deleted the response length (the length of writers in database) should have gone from 30 to 25\r",
+							"pm.test('total count must be 25', function(){pm.expect(response.length).to.equal(25);}); //Expect length to be 25\r",
+							"\r",
+							"pm.test('The date must be a non empty string', function(){\r",
+							"    pm.expect(response.date).to.be.a.string\r",
+							"    pm.expect(response.date).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test('client_email should be a string that is not empty', function(){\r",
+							"    pm.expect(response.client_email).to.be.a.string\r",
+							"    pm.expect(response.client_email).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"orders should have key named date\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('date', '');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"orders should have client_email\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'client_email');\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
