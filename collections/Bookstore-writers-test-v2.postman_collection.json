@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "3cc9f71f-47e5-458f-b2cc-d8814942caca",
+		"name": "Bookstore-writers-test-v2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create writer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e7924073-ad42-463d-9cd2-5490e1da9ee4",
+						"exec": [
+							"if (!pm.environment.has(\"mockData\")) {",
+							"    let mockData = [",
+							"      {",
+							"        \"name\": \"John Pemberton\",",
+							"\t    \"description\": \"On the Subject of Java\"",
+							"      },",
+							"      {",
+							"        \"name\": \"Bagoes Wiryomartono\",",
+							"\t    \"description\": \"Javanese Culture and the Meanings of Locality\"",
+							"      },",
+							"      {",
+							"        \"name\": \"Sir Thomas Stamford Raffles\",",
+							"\t    \"description\": \"A History of Java\"",
+							"      },",
+							"      {",
+							"        \"name\": \"Magnus Lilja, Ulrik Nilsson, Bo Silborn\",",
+							"\t    \"description\": \"Programmering 1 Java\"",
+							"      },",
+							"      {",
+							"       \"name\": \"Jan Skansholm\",",
+							"\t    \"description\": \"Java direkt med Swing\"",
+							"      }",
+							"    ];",
+							"    pm.environment.set(\"counter\", 0);",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));",
+							" }",
+							"",
+							" // Reading/parsing environment variables back to local variables",
+							" let counter = pm.environment.get(\"counter\") / 1;",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));",
+							" let {name, description} = mockData[counter];",
+							"",
+							" // Save to environment variables to use in the request",
+							" pm.environment.set('name', name);",
+							" pm.environment.set('description', description);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "77566814-a30b-4ecc-8baf-534f14e9a84b",
+						"exec": [
+							"// The response",
+							"let response = pm.response.json();",
+							"",
+							"// Reading/parsing environment variables back to local variables",
+							"let counter = pm.environment.get(\"counter\") / 1;",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));",
+							"",
+							"// Add the inserted id to the mockData and save to environment",
+							"mockData[counter].id = response.lastID;",
+							"pm.environment.set('mockData', JSON.stringify(mockData));",
+							"",
+							"// Test number of changed rows",
+							"pm.test('one row should be changed', function(){",
+							"    pm.expect(response.changes).to.equal(1);",
+							"});",
+							"",
+							"// Increment the counter and save to environment",
+							"counter++;",
+							"pm.environment.set('counter', counter);",
+							"",
+							"// Run request again if more mockdata",
+							"if(mockData[counter]){",
+							"    postman.setNextRequest('Create writer');",
+							"}",
+							"// Otherwise reset the counter",
+							"// (for the next request that will reuse the mockdata)",
+							"else {",
+							"  pm.environment.set(\"counter\", 0);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"{{name}}\",\n  \"description\": \"{{description}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read writer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7b5660eb-b358-4369-9d98-524217c9ab88",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables",
+							"let counter = pm.environment.get(\"counter\") / 1;",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));",
+							"let {id} = mockData[counter];",
+							"",
+							"// Save to environment variable to use in the request",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0b534d91-8dfa-44ad-9861-e264abae444c",
+						"exec": [
+							"// The response",
+							"let response = pm.response.json();",
+							"",
+							"// Reading/parsing environment variables back to local variables",
+							"let counter = pm.environment.get(\"counter\") / 1;",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));",
+							"",
+							"// Compare with the response from the database;",
+							"pm.test('data in db should equal previously written mock data', function(){",
+							"    pm.expect(response, counter + ' used').to.deep.equal([mockData[counter]]);",
+							"});",
+							"",
+							"// Increment the counter and save to environment",
+							"counter++;",
+							"pm.environment.set('counter', counter);",
+							"",
+							"// Run request again if more mockdata",
+							"if(mockData[counter]){",
+							"    postman.setNextRequest('Read writer');",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
