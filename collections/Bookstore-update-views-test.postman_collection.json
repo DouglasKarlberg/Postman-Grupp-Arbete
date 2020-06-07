@@ -1,0 +1,1058 @@
+{
+	"info": {
+		"_postman_id": "a9dabb82-354e-42a0-82c9-75f683a01062",
+		"name": "Bookstore-update-views-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create writer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e75114e8-4769-47cc-886c-f50cb728d5b0",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Changes occured\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"id\", response.lastID);\r",
+							"postman.setNextRequest('Read writers');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "48a2267d-3098-48db-8516-61ef52ce4449",
+						"exec": [
+							"pm.collectionVariables.set(\"description\", \"\\\"\" + Math.random().toString(24).substr(1, 7) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"name\", \"\\\"\" + Math.random().toString(24).substr(1, 7) + \"\\\"\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": {{name}},\n  \"description\": {{description}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f224159-6b2a-4170-bf1e-fbb73f70eab2",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let name = pm.collectionVariables.get(\"name\");\r",
+							"let description = pm.collectionVariables.get(\"description\");\r",
+							"\r",
+							"pm.test(\"A writer is created\", function () {    \r",
+							"    pm.expect(JSON.stringify(response[0].name)).to.eql(name);\r",
+							"    pm.expect(JSON.stringify(response[0].description)).to.eql(description);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Create book');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "eab9b55a-e4d5-49a8-a826-8d8b48b5e296",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "22b0fe37-aac9-4f89-9631-609d2c974128",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Changes occured\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"id\", response.lastID);\r",
+							"postman.setNextRequest('Read books');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0d568678-7cb0-48f9-a814-97f70e746cd2",
+						"exec": [
+							"pm.collectionVariables.set(\"ISBN_nr\", \"\\\"\" + Math.floor(100000000 + Math.random() * 900000000) + \"-\" + Math.floor(Math.random() * 10) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"title\", \"\\\"\" + Math.random().toString(24).substr(1, 7) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"description\", \"\\\"\" + Math.random().toString(24).substr(1, 7) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"pages\", Math.floor(Math.random() * 10000));\r",
+							"pm.collectionVariables.set(\"price\", Math.floor(Math.random() * 10000));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ISBN_nr\": {{ISBN_nr}},\r\n  \"title\": {{title}},\r\n  \"description\": {{description}},\r\n  \"pages\": {{pages}},\r\n  \"price\": {{price}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a2dc4e7e-b358-46fd-90d1-95e8cfda37b5",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let ISBNnr = pm.collectionVariables.get(\"ISBN_nr\");\r",
+							"let title = pm.collectionVariables.get(\"title\");\r",
+							"let description = pm.collectionVariables.get(\"description\");\r",
+							"let pages = pm.collectionVariables.get(\"pages\");\r",
+							"let price = pm.collectionVariables.get(\"price\");\r",
+							"\r",
+							"pm.test(\"A book is created\", function () {\r",
+							"    pm.expect(JSON.stringify(response[0].ISBN_nr)).to.eql(ISBNnr);\r",
+							"    pm.expect(JSON.stringify(response[0].title)).to.eql(title);\r",
+							"    pm.expect(JSON.stringify(response[0].description)).to.eql(description);\r",
+							"    pm.expect(response[0].pages).to.eql(pages / 1);\r",
+							"    pm.expect(response[0].price).to.eql(price / 1);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Create client');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create client",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "219e0ffd-ed38-43e1-9a0c-0f928c69838f",
+						"exec": [
+							"pm.collectionVariables.set(\"email\", \"\\\"\" + Math.random().toString(24).substr(1, 7) + \"@\" + Math.random().toString(24).substr(1, 7) + \".com\" + \"\\\"\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "007d3906-36d2-439a-84e9-8fe8d2cec2de",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Changes occured\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"id\", response.lastID);\r",
+							"postman.setNextRequest('Read clients');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "873a0c85-847f-4721-86f5-f4f8d1b4b79b",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let email = pm.collectionVariables.get(\"email\");\r",
+							"\r",
+							"pm.test(\"A client is created\", function () {\r",
+							"    pm.expect(JSON.stringify(response[0].email)).to.eql(email);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Make an order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make an order",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "056ce009-2e3a-4e51-9f15-41dd62bbd0ea",
+						"exec": [
+							"pm.collectionVariables.set(\"date\", \"\\\"\" + \"2019-12\" + (Math.floor(Math.random() * (30 - 10)) + 10) + \" \" + (Math.floor(Math.random() * (24 - 10)) + 10) + \":\" + (Math.floor(Math.random() * (60 - 10)) + 10) + \":\" + (Math.floor(Math.random() * (60 - 10)) + 10) + \"\\\"\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0735cf49-82f6-44f3-9f94-446ef1ab8626",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Changes occured\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)  \r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"id\", response.lastID);\r",
+							"postman.setNextRequest('Read orders');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": {{date}},\n\t\"client_email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a9f4d19e-e5a3-4c1c-b322-91cd04354482",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let date = pm.collectionVariables.get(\"date\");\r",
+							"let email = pm.collectionVariables.get(\"email\");\r",
+							"\r",
+							"pm.test(\"An order has been made\", function () {\r",
+							"    pm.expect(JSON.stringify(response[0].date)).to.eql(date);\r",
+							"    pm.expect(JSON.stringify(response[0].client_email)).to.eql(email);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Make an orderline');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make an orderline",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a6c72588-669c-45ae-b468-4c29d0a79a90",
+						"exec": [
+							"let amount = Math.floor(Math.random() * (50 - 1)) + 1;\r",
+							"pm.collectionVariables.set(\"amount\", amount);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "004347d6-6cdd-4eef-a251-07edf0fb02c5",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Changes occured\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)  \r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"id\", response.lastID);\r",
+							"postman.setNextRequest('Read orderlines');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": {{amount}},\n\t\"book_ISBN_nr\": {{ISBN_nr}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read orderlines",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "192ad311-ff81-47b0-b2e3-4b05ea6633e2",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let amount = pm.collectionVariables.get(\"amount\");\r",
+							"let ISBN = pm.collectionVariables.get(\"ISBN_nr\");\r",
+							"\r",
+							"pm.test(\"Orderline was created\", function () {\r",
+							"    pm.expect(response[0].amount).to.eql(amount / 1);\r",
+							"    pm.expect(JSON.stringify(response[0].book_ISBN_nr)).to.eql(ISBN);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Create OrderlinesXorders');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create OrderlinesXorders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fbc4ee8e-86dc-42f8-a4fd-36f0e0aade71",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a50b9e40-a857-4542-ad7f-936667be36b8",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)  \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Create booksXwriters');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"order_id\": {{id}},\n\t\"order_line_id\": {{id}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlinesXorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlinesXorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create booksXwriters",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fce2c246-345a-4cf5-8a38-5a874f6399f9",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "11d41a0a-37c4-41b0-b314-fdbf7de9409b",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    pm.expect(response.changes).to.eql(1)   \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Read view of updated amount_of_books_sold_per_month');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": {{id}},\n\t\"book_ISBN_nr\": {{ISBN_nr}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read view of updated amount_of_books_sold_per_month",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d0039085-8dc8-4e2f-a431-907731471002",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let booksSold = pm.collectionVariables.get(\"booksSoldNovember\");\r",
+							"let moneyEarned = pm.collectionVariables.get(\"amountSoldNovember\");\r",
+							"\r",
+							"pm.test(\"View with the latest update\", function () {\r",
+							"    pm.expect(response[0].AmountOfBooksSold).to.be.above(booksSold / 1);\r",
+							"    pm.expect(response[0].AmountOfMoneyEarnedPerMonthWithoutTaxes).to.be.above(moneyEarned / 1);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Read view of updated books_and_writers');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/amount_of_books_sold_per_month/?year_month=2020-01",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"amount_of_books_sold_per_month",
+						""
+					],
+					"query": [
+						{
+							"key": "year_month",
+							"value": "2020-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read view of updated books_and_writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7e3b0107-1be9-4bdc-ab8f-e9885b765d28",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let bookWritersLength = pm.collectionVariables.get(\"booksAndWritesLength\");\r",
+							"\r",
+							"pm.test(\"View with the latest update\", function () {\r",
+							"    pm.expect(response).to.have.lengthOf.above(bookWritersLength / 1);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Read view of updated order_details');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books_and_writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books_and_writers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read view of updated order_details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a58e8bba-2000-47b7-b169-948df0245574",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let orderLength = pm.collectionVariables.get(\"orderDetailsLength\");\r",
+							"\r",
+							"pm.test(\"View with the latest update\", function () {\r",
+							"    pm.expect(response).to.have.lengthOf.above(orderLength / 1);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Read view of updated total_amount_paid_per_client');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/order_details",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"order_details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read view of updated total_amount_paid_per_client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "686adb20-3de1-47da-a89c-1aa14dec3dc0",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let paidClientLength = pm.collectionVariables.get(\"paidPerClientLength\");\r",
+							"\r",
+							"pm.test(\"View with the latest update\", function () {\r",
+							"    pm.expect(response).to.have.lengthOf.above(paidClientLength / 1);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('Read view of updated total_price_per_order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/total_amount_paid_per_client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"total_amount_paid_per_client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read view of updated total_price_per_order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "80c059a4-4772-4f99-811c-933f5df15cad",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let priceOrderLength = pm.collectionVariables.get(\"pricePerOrderLength\");\r",
+							"\r",
+							"pm.test(\"View with the latest update\", function () {\r",
+							"    pm.expect(response).to.have.lengthOf.above(priceOrderLength / 1);\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/total_price_per_order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"total_price_per_order"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e6143987-6648-4ee6-ae45-9a97b04ba788",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f7be9476-f532-4d71-808b-2a3b754125a6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "732cecac-0e42-4caa-bc08-5791a60f1b6b",
+			"key": "Description",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "f49358ed-dabe-4697-825a-bc093e63427b",
+			"key": "Name",
+			"value": "\"x0cjs\"",
+			"type": "string"
+		},
+		{
+			"id": "0dcb9214-dd83-4ca8-9aae-a1142a8fc7af",
+			"key": "writerId",
+			"value": 159,
+			"type": "number"
+		},
+		{
+			"id": "2fea8499-f290-43cb-9292-239a9e2aef6f",
+			"key": "ISBN_nr",
+			"value": "\"494152527-7\"",
+			"type": "string"
+		},
+		{
+			"id": "7bd28068-9ae7-4e04-8d30-a2295eeee5d0",
+			"key": "bookDescription",
+			"value": "\"uel0u\"",
+			"type": "string"
+		},
+		{
+			"id": "7e06276b-836e-4ec1-bd71-d93a64d6f02d",
+			"key": "pages",
+			"value": 4367,
+			"type": "number"
+		},
+		{
+			"id": "bb4fa028-ff53-4de7-9822-21525db947c3",
+			"key": "price",
+			"value": 4296,
+			"type": "number"
+		},
+		{
+			"id": "0796f535-a2f0-4037-9f80-7bbebbf65bac",
+			"key": "title",
+			"value": "\".6h3jdm\"",
+			"type": "string"
+		},
+		{
+			"id": "a490c3a1-eeb2-45f5-baf0-373b1a0f9321",
+			"key": "bookId",
+			"value": 182,
+			"type": "number"
+		},
+		{
+			"id": "c53bb603-e860-455d-8421-7e2d48771ea5",
+			"key": "email",
+			"value": "\".84ge82@.chjkdg.com\"",
+			"type": "string"
+		},
+		{
+			"id": "073e9ee9-303f-4289-8fa3-3bf13e544819",
+			"key": "clientId",
+			"value": 37,
+			"type": "number"
+		},
+		{
+			"id": "7ff911d6-dbc8-4c0c-ba64-3f5c7c5d2415",
+			"key": "date",
+			"value": "\"2019-1227 23:40:15\"",
+			"type": "string"
+		},
+		{
+			"id": "97a6e227-bbc0-4807-97f5-088b4a4815c6",
+			"key": "orderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a7d27bc1-484b-4368-bf36-c3f7cccd5338",
+			"key": "amount",
+			"value": 43,
+			"type": "number"
+		},
+		{
+			"id": "6e2fa0a7-9d38-4793-b83d-4079648c678f",
+			"key": "orderLineId",
+			"value": 36,
+			"type": "number"
+		},
+		{
+			"id": "ca7e3b2f-a4bb-4ea4-88a2-217b678d4f21",
+			"key": "ordersId",
+			"value": 51,
+			"type": "number"
+		},
+		{
+			"id": "ca53ba69-69f3-4849-9af3-06f43705629f",
+			"key": "writerDescription",
+			"value": "\"2hmkh\"",
+			"type": "string"
+		},
+		{
+			"id": "99d0cdb3-b51d-4831-b7be-cfd10c6c56f5",
+			"key": "amountSoldNovember",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "7e15e2b1-8912-4d67-8f7b-4aa607601199",
+			"key": "booksSoldNovember",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "75850a27-b290-46c3-ac3a-49bb965d3db1",
+			"key": "booksAndWritesLength",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "c293d242-8043-42d2-a6d0-c86d4ed37592",
+			"key": "orderDetailsLength",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "b903c252-d71b-43ce-8099-068a4420352f",
+			"key": "paidPerClientLength",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "246e356d-0e50-4b1c-b65c-cfec260b8748",
+			"key": "pricePerOrderLength",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "b997e528-d126-4d39-9fc9-e55dafbec5a2",
+			"key": "description",
+			"value": "\".mk11c6\"",
+			"type": "string"
+		},
+		{
+			"id": "81108c7a-c30d-4a7a-96ba-42a34f22bfc6",
+			"key": "name",
+			"value": "\".c8efb0\"",
+			"type": "string"
+		},
+		{
+			"id": "e3518895-528a-41de-93da-c7d0d2539e5c",
+			"key": "id",
+			"value": 52,
+			"type": "number"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
