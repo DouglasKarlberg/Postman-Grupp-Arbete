@@ -1,0 +1,469 @@
+{
+	"info": {
+		"_postman_id": "699b7343-8cfa-4187-9b97-78677594a21f",
+		"name": "Bookstore-orderlines-test-SHIP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create orderlines",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "724c8775-03c9-4f3c-aef4-ff1756a82e83",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      {\r",
+							"        \"amount\": 4,\r",
+							"        \"book_ISBN_nr\": \"919485033-Y\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"amount\": 7,\r",
+							"        \"book_ISBN_nr\": \"277486042-Y\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"amount\": 1,\r",
+							"        \"book_ISBN_nr\": \"277784617-Y\"\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {amount, book_ISBN_nr} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('amount', amount);\r",
+							" pm.environment.set('book_ISBN_nr', book_ISBN_nr);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ee09d733-0d61-407d-a327-8a972e80ce49",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create orderlines');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": \"{{amount}}\",\n  \"book_ISBN_nr\": \"{{book_ISBN_nr}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all orderlines",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1da38a01-71d4-4f09-9cb5-c4e26954e4f8",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d2cfb584-61d7-4a9b-925c-1882e6fd55e0",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('Check each element in mockData and expect it to deep include the response', function(){\r",
+							"     pm.expect(response).to.deep.include(mockData[counter]);    //Expect response to include whats inside mockData arrayn on each elemern (counter)\r",
+							"});\r",
+							"\r",
+							"//id receives mockData[counter]'s elements' id\r",
+							"let id= mockData[counter].id;       //Will be fetched into delete step\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;                                     //counter counts up\r",
+							"pm.environment.set('counter', counter);         \r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch all orderlines');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); \r",
+							"} \r",
+							"\r",
+							"\r",
+							"pm.test('book_ISBN_nr shoule be an non empty string', function(){\r",
+							"    pm.expect(response.book_ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.book_ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update orderlines",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "eee0e9e0-e798-4b7a-ab5c-4303d41f6339",
+						"exec": [
+							"// counter receives the eviroment variable devided by 1\r",
+							"let counter = pm.environment.get(\"counter\") / 1;   \r",
+							"\r",
+							"\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"//id receives mockData arrays elements' id\r",
+							"let id = mockData[counter].id\r",
+							"\r",
+							"mockData.map(x => x.amount= 15) //loop through mockData array with x and change amount to 15 on each id in the created orderlines\r",
+							"\r",
+							"\r",
+							"let {amount, book_ISBN_nr} = mockData[counter]\r",
+							" \r",
+							"pm.environment.set('id',id);\r",
+							"\r",
+							"pm.environment.set('amount', amount)\r",
+							"pm.environment.set('book_ISBN_nr', book_ISBN_nr)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": \"{{amount}}\",\n  \"book_ISBN_nr\": \"{{book_ISBN_nr}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete orderlines",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c673af4e-08e3-4cde-a106-93292519bf98",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae968927-6c7e-4b94-b749-95a803815959",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let id=pm.environment.get(\"id\");\r",
+							"\r",
+							"\r",
+							"//Test if response status returns 200\r",
+							"pm.test(\"Check if response status returns 200\", function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);    //Check response status if it has 200, the change was an success\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Delete orderlines');\r",
+							"}\r",
+							"else {\r",
+							"\r",
+							"  pm.environment.set(\"counter\", 0);     //reset counter to 0\r",
+							"  pm.environment.unset(\"id\") \r",
+							"\r",
+							"} \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch orderlines again",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "37597eb1-0891-48cc-9add-3f00a9f2846e",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter]\r",
+							" \r",
+							"  // Save to environment variable to use in the request\r",
+							"  pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d985a7f2-05c7-4ee8-8136-1f2d76949039",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"pm.test('The data in db should not have the new mockdata any longer', function(){\r",
+							"    pm.expect(response).to.be.an('array').that.is.empty;\r",
+							"});\r",
+							"\r",
+							"let id= mockData[counter].id;\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"pm.environment.set('id',id)\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Fetch orderlines again');\r",
+							"}\r",
+							"\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0); \r",
+							"  \r",
+							"} \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch all orderlines again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "43e20905-3654-4e23-b069-bd1ef24f2ad8",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"//If orderlines were deleted the response length (the length of orderlines in database) should have gone from 23 to 20\r",
+							"pm.test('total count must be 20', function(){pm.expect(response.length).to.equal(20);}); //Expect length to be 20\r",
+							"\r",
+							"pm.test('The book_ISBN_nr must be a non empty string', function(){\r",
+							"    pm.expect(response.book_ISBN_nr).to.be.a.string\r",
+							"    pm.expect(response.book_ISBN_nr).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"orderlines should have key named amount\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('amount', '');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"orderlines should have book_ISBN_nr\", function(){\r",
+							"    let response = pm.response.json();\r",
+							"    for(let w of response) {\r",
+							"        pm.expect(w).to.have.any.keys('', 'book_ISBN_nr');\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
